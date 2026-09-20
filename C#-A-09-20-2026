@@ -1,1 +1,186 @@
+MONOBEHAVIOUR
+// Concept: A game character represented as data + behavior( a class).
+// CODE PROPER 
+using System;
+class character
+{ 
+	 public string name;
+	 public int X, Y;. // position on the map
+	 public int width, height; //bounding shape 
+	 public int Health,
+	  
+	  // constructor: how a character is "born"
+	  public character( string name, int x, int y, int width, intr height, int Health)
 
+	  { 
+		Name =name;
+		x = x;
+		Y = y;
+		Width =width;
+		Height = height;
+		Health =Health;
+	  }
+	  //behavior: methods define what the character can Do
+	  public void MoveTo(int newX, int newY)
+	  {
+		X =newX;
+		Y =newY;
+		Console.writeline($"{Name} move to ({x},{y})");
+	  }
+	  public void TakeDamage(int amount)
+	  {
+		Health -= amount; // Decreased of your health 
+		Health = math.max(health , 0);
+		Console.writeline($"{Name} tool {amount} damage. Health:{health}");
+	  } 
+	  public void printshape()
+	  {
+		//Draw the characteras as an ASCII rectangle
+		for (int row = 0; < Height' row++)
+		{
+			Console.writeline(new string('#', width));
+		}
+	  }
+}
+
+// Movement for Gridbased character
+class Program
+{
+	static void main()
+	{
+        character hero = new character("hero", 0, 0, 3, 2, 100);
+		herp:Printshare();
+		hero.MoveTo(5, 3);
+		hero.TakeDamage(25);
+
+	}
+}
+// GRID BASE Movement
+// GameObject
+using UnityEngine;
+public class GridMovement : MONOBEHAVIOUR
+{ 
+	public float tilesize=1.0f; // size of one grid cell
+	public float movespeed = 10f // how fast we glide
+	between tiles(feel, not logic)
+	 public vector3 targetpositionI
+	 private bool ismoving = false;
+
+	 void Start()
+	 {
+		//Snap starting position to the grid so everything lines up
+      targetposition = snapToGrid( transform.position);
+	  transform.position =targetposition
+	 }
+	 void Update()
+     {
+		if(!isMoving)'
+		{
+			hadleInput();
+		}
+		else
+		{
+			//Smoothly guide to the next line
+			transform.position =vector3.MoveTowards(transform.position, targetpositionI.movespeed * tiles.deltaTime);
+		if (Vector 3.distance(transform.position,
+		targetpositionI) <0.001f)	 
+		{
+			transform.position = targetposition;
+			isMoving = false;
+		}
+	 }
+}
+   void hadleInput()
+   {
+	vector3 direction = vector3.zero;
+
+	if(input.GetKeyDown(Keycode.W) direction = vector3.up;
+	else if(input.GetKeyDown(Keycode.S)) direction =vector3.down;
+	else if(input.GetKeyDown(Keycode.A)) direction =vector3.left
+	else if(input.GetKeyDown(Keycode.D)) direction = vector3.right
+
+	if ( direction != vector3.zero)
+     {
+		 targetposition =transform.position + direction * tilesize;
+		 isMoving =true;
+		 {
+			return new vector3(
+				Mathf.Round(pos.x / tilesize) *tilesize,
+				Mathf.Round(pos.y / tilesize) *tilesize
+				pos.z
+		
+			);
+
+		 }
+	 }
+
+   }
+// Movement for Freemovement character
+using UnityEngine;
+public class Freemovement: MONOBEHAVIOUR
+{
+	public float movespeed 5f;
+
+	void Update()
+	{
+		// GetAxis give Smooth values between -1 and 1
+		float horizontal =input.GetAxis("horizontal"); // A/d or left/RIGHT ARROWS
+		float vertical =Input.GetAxis("Vertical"); // W/S or up/down arrrows
+		vector3 direction =new vector3(horizontal, vertical, of);
+		// diagonal Movement
+		if(direction.magnitude > 1f)
+		{
+			direction.Normalize();
+		}
+		 transform.position += direction * movespeed * TIme.deltaTime;
+	}
+}
+
+
+
+// Movement for Physicsbased character
+// GameObject/ Rigibody2d component
+using UnityEngine;
+
+[RequiredComponent(typeif(Rigibody2d))]
+public class PhysicsMovement: MonoBehaviour 
+{
+	public float moveForce =10f;
+	public float jumpForce =7f;
+	public float maxSpeed =6f;
+
+	private Rigibody2d rb;
+	private boold isGrounded =false;
+
+  void Start()
+  {
+	rb = GetComponent<Rigibody2d>();
+  }
+  void FixedUpdate()
+  {
+	// physic change FixedUpdate
+	// frame rate 
+	float horizontal = input.GetAxis("horizontal");
+	rb.AddForce(new vector2(horizontal * moveForce, of));
+	// clam horizontal
+	if(Mathf.Abs(rb.velocity.x)> maxSpeed)
+	{
+		  rb.velocity = new vector2(Mathf.Sign(rb.velocity.x)* maxSpeed, rb.velocity.y);
+	}
+  }
+   void OnCollisionEnter2D(Collision2D collision)
+   {
+	if(collision.GameObject.CompareTag("ground"))
+	{
+		 isGrounded =true;
+	}
+
+   }
+   void OnCollisionExit2D(Collision2D collision)
+   {
+	  if(collision.GameObject.CompareTag("ground"))
+	  {
+		  is Grounded = false;
+	  }
+   }
+}
